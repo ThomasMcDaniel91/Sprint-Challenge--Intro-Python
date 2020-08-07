@@ -1,5 +1,13 @@
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, lat and lon (representing latitude and longitude).
+class City:
+  def __init__(self, name, lat, lon):
+    self.name = name
+    self.lat = lat
+    self.lon = lon
+
+  def __str__(self):
+    return f"City({self.name}, {self.lat},{self.lon})"
 
 
 # We have a collection of US cities with population over 750,000 stored in the
@@ -15,9 +23,21 @@
 # Note that the first line of the CSV is header that describes the fields--this
 # should not be loaded into a City object.
 cities = []
-
+import csv
 def cityreader(cities=[]):
   # TODO Implement the functionality to read from the 'cities.csv' file
+  # opening the csv file
+  with open('src\cityreader\cities.csv', newline='') as csvfile:
+    #reading the info in the file
+    citylist = csv.reader(csvfile)
+    # skips the first row of what would be the column names
+    next(citylist, None)
+    for row in citylist:
+      # instantiating a City class object with the corresponding attributes
+      new_city = City(row[0], float(row[3]), float(row[4]))
+      # appending the created city to the cities list
+      cities.append(new_city)
+    
   # Ensure that the lat and lon valuse are all floats
   # For each city record, create a new City instance and add it to the 
   # `cities` list
@@ -27,8 +47,8 @@ def cityreader(cities=[]):
 cityreader(cities)
 
 # Print the list of cities (name, lat, lon), 1 record per line.
-for c in cities:
-    print(c)
+# for c in cities:
+#     print(c)
 
 # STRETCH GOAL!
 #
@@ -62,10 +82,30 @@ for c in cities:
 # TODO Get latitude and longitude values from the user
 
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
+  elat = 0
+  wlat = 0
+  slon = 0
+  nlon = 0
+
+  if lat1 > lat2:
+    wlat = lat2
+    elat = lat1
+  else:
+    wlat = lat1
+    elat = lat2
+  if lon1 > lon2:
+    nlon = lon1
+    slon = lon2
+  else:
+    slon = lon1
+    nlon = lon2
   # within will hold the cities that fall within the specified region
-  within = []
-  
+  within = []  
   # Go through each city and check to see if it falls within 
   # the specified coordinates.
-
+  for city in cities:
+    if city.lon > slon and city.lon < nlon:
+      if city.lat > wlat and city.lat < elat:
+        within.append(city)
   return within
+print(cityreader_stretch(32, -120, 45, -100, cities=cities))
